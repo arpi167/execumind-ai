@@ -27,10 +27,13 @@ app.register_blueprint(nlp_bp)
 
 if __name__ == "__main__":
     key = os.getenv("GEMINI_API_KEY", "")
+
     print("\n🚀 ExecuMind AI Server Starting...")
     print("━" * 40)
-    print("  Frontend : http://localhost:5000")
-    print("  API Base : http://localhost:5000")
-    print(f"  Gemini   : {'✅ key loaded' if key and key != 'your_api_key_here' else '⚠️  key missing – fallbacks active'}")
+    print("  Frontend : Render URL will be assigned")
+    print("  API Base : /")
+    print(f"  Gemini   : {'✅ key loaded' if key and key != 'your_api_key_here' else '⚠️ key missing – fallbacks active'}")
     print("━" * 40)
-    app.run(debug=True, host="0.0.0.0", port=5000)
+
+    port = int(os.environ.get("PORT", 5000))  # ✅ IMPORTANT
+    app.run(host="0.0.0.0", port=port)        # ❌ remove debug=True
