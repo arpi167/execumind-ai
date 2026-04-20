@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExecuMind AI – Intelligent Task Execution System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<div class="app">
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L15 9H22L16.5 13.5L18.5 21L12 17L5.5 21L7.5 13.5L2 9H9L12 2Z" opacity="0.9"/></svg>
+      </div>
+      <h1>ExecuMind</h1>
+      <span>AI Execution System</span>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Core</div>
+      <div class="nav-item active" onclick="switchTab('dashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('planner',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Planner</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('tracker',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Tracker</span>
+      </div>
+      <div class="nav-section">Growth</div>
+      <div class="nav-item" onclick="switchTab('rewards',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <span>Rewards</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('assistant',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Assistant</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-stats" id="sidebarStats">
+      <div class="ss-row"><span class="ss-label">Level</span><span class="ss-val" id="ss-level">1</span></div>
+      <div class="ss-row mb-8"><span class="ss-label">XP</span><span class="ss-val" id="ss-xp">0 / 500</span></div>
+      <div class="xp-bar-wrap"><div class="xp-bar" id="ss-xp-bar" style="width:0%"></div></div>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-right">
+        <div class="streak-badge">🔥 <span id="streakCount">0</span> day streak</div>
+        <div class="date-chip" id="dateChip"></div>
+        <div class="api-status" id="apiStatus" title="Backend connection"></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ DASHBOARD TAB ═══ -->
+      <div class="tab-pane active" id="tab-dashboard">
+        <div class="grid-4 mb-20">
+          <div class="stat-card purple">
+            <div class="stat-label">Tasks Today</div>
+            <div class="stat-num" id="stat-total">0</div>
+            <div class="stat-change" id="stat-total-change" style="color:var(--text3)">Add your first task</div>
+          </div>
+          <div class="stat-card teal">
+            <div class="stat-label">Completed</div>
+            <div class="stat-num" id="stat-done">0</div>
+            <div class="stat-change" id="stat-pct" style="color:var(--text3)">0% done</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-label">XP Earned</div>
+            <div class="stat-num" id="stat-xp">0</div>
+            <div class="stat-change up">Today's haul</div>
+          </div>
+          <div class="stat-card coral">
+            <div class="stat-label">Focus Score</div>
+            <div class="stat-num" id="stat-focus">—</div>
+            <div class="stat-change" style="color:var(--text3)">AI analyzed</div>
+          </div>
+        </div>
+
+        <div class="grid-2 mb-16">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Today's Priority Tasks</div>
+                <div class="card-sub">AI-ranked by impact</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="switchTab('planner', document.querySelector('[onclick*=planner]'))">+ Add Task</button>
+            </div>
+            <div id="dashTaskList">
+              <div class="empty"><div class="empty-icon">📋</div><h3>No tasks yet</h3><p>Head to Planner to create your first task</p></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">AI Decision Engine</div>
+                <div class="card-sub">Strategic analysis</div>
+              </div>
+              <button class="btn btn-teal btn-sm" onclick="runDecisionEngine()">Analyze</button>
+            </div>
+            <div id="decisionPanel">
+              <div class="empty"><div class="empty-icon">🧠</div><h3>Engine idle</h3><p>Add tasks and click Analyze to get AI strategy</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Weekly Execution Chart</div><div class="card-sub">Task completion rate</div></div>
+          </div>
+          <canvas id="weekChart" height="90"></canvas>
+        </div>
+      </div>
+
+      <!-- ═══ PLANNER TAB ═══ -->
+      <div class="tab-pane" id="tab-planner">
+        <div class="grid-2">
+          <div>
+            <div class="card mb-16">
+              <div class="card-head">
+                <div><div class="card-title">🧠 NLP Brain Dump</div><div class="card-sub">Type anything — AI structures it</div></div>
+                <span class="badge ai">AI-Powered</span>
+              </div>
+              <textarea id="nlpInput" class="mb-12" placeholder="e.g. I need to finish the quarterly report, call the client about the proposal, review the team's code PR, prepare slides for Friday's presentation, and also need to exercise today..."></textarea>
+              <button class="btn btn-primary" onclick="processNLP()" id="nlpBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Parse with AI
+              </button>
+              <div id="nlpOutput" class="nlp-output" style="display:none"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><div class="card-title">➕ Add Task Manually</div></div>
+              <div class="mb-12"><label>Task Title</label><input type="text" id="taskTitle" placeholder="What needs to get done?"></div>
+              <div class="grid-2 mb-12">
+                <div><label>Priority</label>
+                  <select id="taskPriority"><option value="high">🔴 High</option><option value="med" selected>🟡 Medium</option><option value="low">🟢 Low</option></select>
+                </div>
+                <div><label>Duration</label>
+                  <select id="taskDuration"><option value="15">15 min</option><option value="30" selected>30 min</option><option value="45">45 min</option><option value="60">1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option></select>
+                </div>
+              </div>
+              <div class="mb-12"><label>Category</label>
+                <select id="taskCategory"><option value="work">💼 Work</option><option value="learning">📚 Learning</option><option value="health">💪 Health</option><option value="personal">🏠 Personal</option><option value="creative">🎨 Creative</option></select>
+              </div>
+              <button class="btn btn-primary" onclick="addTask()" style="width:100%">Add Task</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="card mb-16">
+              <div class="card-head">
+                <div><div class="card-title">⏱ AI Time-Block Schedule</div><div class="card-sub">Deep work plan via /plan</div></div>
+                <button class="btn btn-teal btn-sm" onclick="generateSchedule()">Generate</button>
+              </div>
+              <div id="scheduleWrap">
+                <div class="empty"><div class="empty-icon">🗓</div><h3>No schedule yet</h3><p>Add tasks and click Generate</p></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><div class="card-title">📋 Task Queue</div><div class="card-sub" id="taskQueueSub">0 tasks</div></div>
+              <div id="taskQueue">
+                <div class="empty"><div class="empty-icon">✨</div><h3>Queue empty</h3><p>Add your first task above</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ TRACKER TAB ═══ -->
+      <div class="tab-pane" id="tab-tracker">
+        <div class="grid-3 mb-20">
+          <div class="card">
+            <div class="card-title mb-12">Execution Rate</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px">
+              <span style="font-family:var(--font-head);font-size:36px;font-weight:800" id="tr-rate">0%</span>
+              <span class="text-xs">of tasks done</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-accent" id="tr-rate-bar" style="width:0%"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title mb-12">Focus Hours</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px">
+              <span style="font-family:var(--font-head);font-size:36px;font-weight:800" id="tr-hours">0h</span>
+              <span class="text-xs">deep work</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-teal" id="tr-hours-bar" style="width:0%"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title mb-12">Total XP</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px">
+              <span style="font-family:var(--font-head);font-size:36px;font-weight:800;color:var(--accent2)" id="tr-xp-total">0</span>
+              <span class="text-xs">experience pts</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-amber" id="tr-xp-bar" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="grid-2 mb-16">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Behavior Analysis</div>
+              <button class="btn btn-secondary btn-sm" onclick="analyzeBehavior()">AI Analyze</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="bm-item"><div class="bm-label">Execution Rate</div><div class="bm-bar-wrap"><div class="progress-bar"><div class="progress-fill fill-accent" id="bm-exec" style="width:0%"></div></div></div><div class="bm-score" id="bm-exec-s">0%</div></div>
+              <div class="bm-item"><div class="bm-label">Consistency</div><div class="bm-bar-wrap"><div class="progress-bar"><div class="progress-fill fill-teal" id="bm-cons" style="width:0%"></div></div></div><div class="bm-score" id="bm-cons-s">0%</div></div>
+              <div class="bm-item"><div class="bm-label">Planning Accuracy</div><div class="bm-bar-wrap"><div class="progress-bar"><div class="progress-fill fill-amber" id="bm-plan" style="width:0%"></div></div></div><div class="bm-score" id="bm-plan-s">0%</div></div>
+              <div class="bm-item"><div class="bm-label">Focus Depth</div><div class="bm-bar-wrap"><div class="progress-bar"><div class="progress-fill fill-green" id="bm-focus" style="width:0%"></div></div></div><div class="bm-score" id="bm-focus-s">0%</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-title">AI Behavior Report</div><div id="gradeDisplay"></div></div>
+            <div id="behaviorLoading" class="ai-thinking" style="display:none"><div class="spinner"></div> Analyzing patterns via /behavior...</div>
+            <div id="behaviorText" class="text-sm" style="color:var(--text2);line-height:1.7">Click "AI Analyze" to get a personalized behavioral assessment from the /behavior endpoint.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">All Tasks History</div><div class="card-sub" id="historyCount">0 total</div></div>
+          <div id="allTasks"><div class="empty"><div class="empty-icon">📊</div><h3>No history</h3><p>Complete tasks to build your execution record</p></div></div>
+        </div>
+      </div>
+
+      <!-- ═══ REWARDS TAB ═══ -->
+      <div class="tab-pane" id="tab-rewards">
+        <div class="grid-2 mb-20">
+          <div class="card" style="text-align:center;padding:28px">
+            <div class="level-ring">
+              <svg class="ring" viewBox="0 0 90 90">
+                <defs>
+                  <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#7c6aff"/>
+                    <stop offset="100%" style="stop-color:#2dd4bf"/>
+                  </linearGradient>
+                </defs>
+                <circle class="ring-bg" cx="45" cy="45" r="39"/>
+                <circle class="ring-fill" cx="45" cy="45" r="39" id="ringProgress" stroke-dasharray="245" stroke-dashoffset="245"/>
+              </svg>
+              <div class="level-num" id="levelNum">1</div>
+            </div>
+            <div style="font-family:var(--font-head);font-size:18px;font-weight:800;margin-bottom:4px" id="levelTitle">Novice Executor</div>
+            <div class="text-xs mb-16" id="levelXP">0 / 500 XP to next level</div>
+            <div class="xp-bar-wrap"><div class="xp-bar" id="levelBar" style="width:0%"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Stats Overview</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="mini-stat"><div style="font-family:var(--font-head);font-size:22px;font-weight:800" id="rew-streak">0</div><div class="text-xs" style="margin-top:4px">Day Streak 🔥</div></div>
+              <div class="mini-stat"><div style="font-family:var(--font-head);font-size:22px;font-weight:800" id="rew-tasks">0</div><div class="text-xs" style="margin-top:4px">Tasks Done ✅</div></div>
+              <div class="mini-stat"><div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--accent2)" id="rew-xp">0</div><div class="text-xs" style="margin-top:4px">Total XP ⚡</div></div>
+              <div class="mini-stat"><div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--amber)" id="rew-badges">0</div><div class="text-xs" style="margin-top:4px">Badges Earned 🏆</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Achievement Badges</div><div class="card-sub">Complete challenges to unlock</div></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px" id="badgeGrid"></div>
+        </div>
+      </div>
+
+      <!-- ═══ ASSISTANT TAB ═══ -->
+      <div class="tab-pane" id="tab-assistant">
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;height:calc(100vh - 180px)">
+          <div class="card" style="padding:0;display:flex;flex-direction:column;overflow:hidden">
+            <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+              <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--teal));display:flex;align-items:center;justify-content:center;font-size:16px">🧠</div>
+              <div>
+                <div style="font-family:var(--font-head);font-size:14px;font-weight:700">ExecuMind AI Mentor</div>
+                <div style="font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block"></span>Connected via /chat</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="clearChat()">Clear</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+              <div class="msg">
+                <div class="msg-avatar ai">🧠</div>
+                <div class="msg-bubble"><strong>Welcome to ExecuMind AI.</strong><br><br>I'm your intelligent execution mentor connected via the Flask <code>/chat</code> endpoint. I can help you:<br>• Prioritize tasks with precision<br>• Break through mental blocks<br>• Design your optimal work strategy<br><br>What would you like to tackle today?</div>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <textarea class="chat-input" id="chatInput" placeholder="Ask your AI mentor anything..." rows="1" onkeydown="handleChatKey(event)"></textarea>
+              <button class="chat-send" id="chatSend" onclick="sendChat()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;overflow-y:auto">
+            <div class="card">
+              <div class="card-title mb-12">Quick Ask</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button class="btn btn-secondary" style="justify-content:flex-start;font-size:12px" onclick="quickAsk('Analyze my current task list and tell me what to focus on first')">🎯 What should I focus on?</button>
+                <button class="btn btn-secondary" style="justify-content:flex-start;font-size:12px" onclick="quickAsk('I feel overwhelmed. Help me simplify my plan.')">😰 I feel overwhelmed</button>
+                <button class="btn btn-secondary" style="justify-content:flex-start;font-size:12px" onclick="quickAsk('Give me a motivational push for peak performance today.')">⚡ Motivate me!</button>
+                <button class="btn btn-secondary" style="justify-content:flex-start;font-size:12px" onclick="quickAsk('What are my biggest productivity blind spots?')">🔍 Find my blind spots</button>
+                <button class="btn btn-secondary" style="justify-content:flex-start;font-size:12px" onclick="quickAsk('Design a deep work focus ritual for maximum productivity.')">🧘 Design focus ritual</button>
+                <button class="btn btn-secondary" style="justify-content:flex-start;font-size:12px" onclick="quickAsk('How do I build habits that actually stick? Practical advice.')">🔄 Build better habits</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title mb-8">Context Snapshot</div>
+              <div class="card-sub mb-12">Sent to AI with each message</div>
+              <div id="contextSnap" style="font-size:12px;color:var(--text2);line-height:1.7">No tasks loaded yet.</div>
+            </div>
+            <div class="card">
+              <div class="card-title mb-8">API Routes</div>
+              <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);line-height:2">
+                <div><span style="color:var(--teal)">POST</span> /chat</div>
+                <div><span style="color:var(--teal)">POST</span> /analyze</div>
+                <div><span style="color:var(--teal)">POST</span> /plan</div>
+                <div><span style="color:var(--teal)">POST</span> /nlp</div>
+                <div><span style="color:var(--teal)">POST</span> /behavior</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </main>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
